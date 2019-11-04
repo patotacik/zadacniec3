@@ -17,15 +17,18 @@ Route::get('/', function () {
 Route::get('/show/{id}',[
   'as'=>'show','uses'=>'UserController@showAction'
 ]);
-Route::get('/insert',[
-    'as'=>'insert','uses'=>'UserController@insertAction'
+Route::post('/insert', [
+    'as'=> 'insert', 'uses' => 'UserController@insertAction'
 ]);
-Route::get('/update/{id}',[
+Route::post('/update/{id}',[
     'as'=>'update','uses'=>'UserController@updateAction'
 ]);
 Route::get('/delete/{id}',[
     'as'=>'delete','uses'=>'UserController@deleteAction'
 ]);
-Route::get('/all',[
-    'as'=>'delete','uses'=>'UserController@showAlllAction'
+Route::get('/add', [
+    'as'=> 'insert', 'uses' => 'UserController@getAddUserForm'
+]);
+Route::get('/users', [
+    'as'=> 'insert', 'uses' => 'UserController@showAllAction'
 ]);

@@ -2,49 +2,55 @@
 
 
 namespace App\Http\Controllers;
-
-
+use Illuminate\Http\Request;
 use App\Models\User;
 
 class UserController extends Controller
 {
-public function showAction($id)
-{
-    $user= User::find($id);
-    echo $user->email."<br>";
-    echo $user->meno." ".$user->priezvisko."<br>";
-    echo $user->vek."<br>";
-    echo $user->updated_at;
-
-}
-    public function insertAction()
+    public function getAddUserForm()
     {
-$user = new User();
-$user->meno=str_random(5);
-        $user->meno=str_random(5);
-        $user->priezvisko=str_random(5);
-        $user->email= $user->meno.".".$user->priezvisko."@gmail.com";
-        $user->vek=mt_rand(1,80);
-        $user->heslo=str_random(20);
-
-        $user->save();
-
+        return view("adduser");
     }
-    public function updateAction($id)
+    public function insertAction(Request $request)
     {
-$user=User::where("id", "=", $id)->first();
-$user->update(["vek"=>mt_rand(1,80)]);
+        $mano=$request->input('mano');
+        $priezvisko=$request->input('priezvisko');
+        $email=$request->input('email');
+        $vek=$request->input('vek');
+
+        $user = new User();
+        $user->meno=$mano;
+        $user->priezvisko=$priezvisko;
+        $user->email=$email;
+        $user->vek=$vek;
+        $user->save();
+        return redirect()->action('UserController@showAllAction');
+    }
+    public function showAction($id)
+    {
+        $user=User::find($id);
+        return view("update", ['user'=> $user]);
+    }
+    public function updateAction($id, Request $request)
+    {
+        $user = User::where("id", "=", $id)->first();
+        $user->update(['meno'=>$request->input('meno'),
+            'priezvisko'=>$request->input('priezvisko'),
+            'email'=>$request->input('Email'),
+            'vek'=>$request->input('vek')]);
+        return redirect()->action('UserController@showAllAction');
     }
     public function deleteAction($id)
-    {
-$user=User::find($id);
-$user->delete();
-    }
-    public function showAlllAction()
-    {
-        $users= User::all();
-        foreach ($users as $user){
-            echo $user->email." ".$user->vek." ".$user->updated_at."<br>";
-        }
-    }
+{
+    $user=User::find($id);
+    $user->delete();
+    return redirect()->action('UserController@showAllAction');
+
+}
+public function showAllAction()
+{
+    $users=User::all();
+    return view("users",["users"=>$users]);
+}
+
 }
